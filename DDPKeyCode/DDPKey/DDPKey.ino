@@ -13,25 +13,26 @@ void setup() {
   pinMode(13, OUTPUT);
   pinMode(8, INPUT_PULLUP);
   
-  Serial.begin(9600);
+  //Serial.begin(9600);
   //lcd.begin(16, 2);
   // Print a message to the LCD.
   
 }
 
 void loop() {
-  sensorValue = analogRead(inputPin);
-  Serial.println(sensorValue);
-  delay(100);
-  Serial.println(digitalRead(8));
-  if(digitalRead(8)==LOW&&sensorValue<400){
-    digitalWrite(13,HIGH);
-    delay(6000);
-    digitalWrite(13,LOW);
-   // Serial.println(digitalRead(8));
-  }else{
-    digitalWrite(13,LOW);
-  }
+  //sensorValue = analogRead(inputPin);
+  //Serial.println(sensorValue);
+  //delay(100);
+//  Serial.println(digitalRead(8));
+//  if(digitalRead(8)==LOW&&sensorValue<400){
+//    digitalWrite(13,HIGH);
+//    delay(6000);
+//    digitalWrite(13,LOW);
+//   // Serial.println(digitalRead(8));
+//  }else{
+//    digitalWrite(13,LOW);
+//  }
+  digitalWrite(13,HIGH);
     
 }
 
