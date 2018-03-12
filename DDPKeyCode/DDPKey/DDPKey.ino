@@ -1,38 +1,72 @@
-//#include <LiquidCrystal.h>
+const int inputGas = A1;
+const int inputMic = A0;
+const int out = 9;
+const int pwLed = 13;
+const int signalLed = 10;
 
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to
-//const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
-//LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+const double threGas = 50;
+const double threMic = 50;
 
-int inputPin = A0;
-double sensorValue;
+double gasVal;
+
+boolean blown;
 
 void setup() {
-  // set up the LCD's number of columns and rows:
-  pinMode(13, OUTPUT);
-  pinMode(8, INPUT_PULLUP);
+  pinMode(out, OUTPUT);
+  pinMode(pwLed, OUTPUT);
+  pinMode(signalLed, OUTPUT);
+  blown = false;
   
-  //Serial.begin(9600);
-  //lcd.begin(16, 2);
-  // Print a message to the LCD.
-  
+  //gather environmental data reference for gas sensor
+  initialization();
 }
 
 void loop() {
-  //sensorValue = analogRead(inputPin);
-  //Serial.println(sensorValue);
-  //delay(100);
-//  Serial.println(digitalRead(8));
-//  if(digitalRead(8)==LOW&&sensorValue<400){
-//    digitalWrite(13,HIGH);
-//    delay(6000);
-//    digitalWrite(13,LOW);
-//   // Serial.println(digitalRead(8));
-//  }else{
-//    digitalWrite(13,LOW);
-//  }
-  digitalWrite(13,HIGH);
-    
+  //show that the code is running
+  digitalWrite(pwLed, HIGH);
+  
+  //Check if human is actually blowing
+  start();
+  
+  //Check alcohol lvl and the corresponding actions
+  if(blown){
+    delay(500);
+    digitalWrite(signalLed, LOW);
+    if(alcLvlTest()){
+      digitalWrite(out,HIGH);
+      delay(6000);
+      digitalWrite(out, LOW);
+      blown = false;
+    }
+    blown = false;
+  }
 }
 
+//Checks alcohol level
+boolean alcLvlTest(){
+  if(blown&&(analogRead(inputGas)-gasVal)< threGas){
+    blown = false;
+    return true;
+  }else{
+    blown = false;
+    return false;
+  }
+}
+
+//Gather enviromental references
+void initialization(){
+  if(!blown){
+    delay(1000);
+    gasVal = analogRead(inputGas);
+    delay(1000);
+    digitalWrite(signalLed, HIGH);
+  }
+}
+
+//signal the beginning of check alcohol level by verifing an actual human breathed
+void start(){
+  if(analogRead(inputMic)>threMic){
+    blown = true;
+  }
+  blown = false;
+}
