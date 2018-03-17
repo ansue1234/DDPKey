@@ -13,6 +13,8 @@ double micVal;
 
 boolean blown;
 
+int count = 0;
+
 void setup() {
   pinMode(out, OUTPUT);
   pinMode(pwLed, OUTPUT);
@@ -25,13 +27,18 @@ void setup() {
 
 void loop() {
   //show that the code is running
+  micVal =  analogRead(inputMic);
   digitalWrite(pwLed, HIGH);
+  Serial.println("gasVal:");
   Serial.println(gasVal);
+  Serial.println("micVal:");
+  Serial.println(micVal);
+  Serial.println(blown);
   //Check if human is actually blowing
   start();
   
   //Check alcohol lvl and the corresponding actions
-  if(blown){
+  if(blown&&count<=0){
     Serial.println(blown);
     delay(500);
     digitalWrite(signalLed, HIGH);
@@ -41,14 +48,16 @@ void loop() {
       delay(6000);
       digitalWrite(out, LOW);
       blown = false;
+      count++;
+    }else{
+      blown = false;
     }
-    blown = false;
   }
 }
 
 //Checks alcohol level
 boolean alcLvlTest(){
-  if(blown&&(analogRead(inputGas)-gasVal)< threGas){
+  if(blown&&((analogRead(inputGas)-gasVal)< threGas)){
     blown = false;
     return true;
   }else{
@@ -64,6 +73,7 @@ void initialization(){
     delay(1000);
     gasVal = analogRead(inputGas);
     delay(1000);
+    Serial.println("initialized");
     //blown = true;
   }
 }
